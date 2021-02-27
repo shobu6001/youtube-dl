@@ -178,6 +178,7 @@ class YoutubeDL(object):
     logger:            Log messages to a logging.Logger instance.
     logtostderr:       Log messages to stderr instead of stdout.
     writedescription:  Write the video description to a .description file
+    writetitle:        Write the video title to a .title file
     writeinfojson:     Write the video description to a .info.json file
     writeannotations:  Write the video annotations to a .annotations.xml file
     writethumbnail:    Write the thumbnail image to a file
@@ -1823,6 +1824,21 @@ class YoutubeDL(object):
                         descfile.write(info_dict['description'])
                 except (OSError, IOError):
                     self.report_error('Cannot write description file ' + descfn)
+                    return
+
+        if self.params.get('writetitle', False):
+            titlefn = replace_extension(filename, 'title', info_dict.get('ext'))
+            if self.params.get('nooverwrites', False) and os.path.exists(encodeFilename(titlefn)):
+                self.to_screen('[info] Video title is already present')
+            elif info_dict.get('title') is None:
+                self.report_warning('There\'s no title to write.')
+            else:
+                try:
+                    self.to_screen('[info] Writing video title to: ' + titlefn)
+                    with io.open(encodeFilename(titlefn), 'w', encoding='utf-8') as titlefile:
+                        titlefile.write(info_dict['title'])
+                except (OSError, IOError):
+                    self.report_error('Cannot write title file ' + titlefn)
                     return
 
         if self.params.get('writeannotations', False):
