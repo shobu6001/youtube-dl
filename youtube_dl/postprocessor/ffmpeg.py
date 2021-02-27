@@ -433,7 +433,7 @@ class FFmpegEmbedSubtitlePP(FFmpegPostProcessor):
 class FFmpegMetadataPP(FFmpegPostProcessor):
     def run(self, info):
         metadata = {}
-
+        
         def add(meta_list, info_list=None):
             if not info_list:
                 info_list = meta_list
@@ -454,20 +454,11 @@ class FFmpegMetadataPP(FFmpegPostProcessor):
         # 3. https://kodi.wiki/view/Video_file_tagging
         # 4. http://atomicparsley.sourceforge.net/mpeg-4files.html
 
-        add('title', ('track', 'title'))
+        add('title')
         add('date', 'upload_date')
         add(('description', 'comment'), 'description')
         add('purl', 'webpage_url')
-        add('track', 'track_number')
-        add('artist', ('artist', 'creator', 'uploader', 'uploader_id'))
-        add('genre')
-        add('album')
-        add('album_artist')
-        add('disc', 'disc_number')
-        add('show', 'series')
-        add('season_number')
-        add('episode_id', ('episode', 'episode_id'))
-        add('episode_sort', 'episode_number')
+        add('artist', ('uploader', 'uploader_id'))
 
         if not metadata:
             self._downloader.to_screen('[ffmpeg] There isn\'t any metadata to add')
